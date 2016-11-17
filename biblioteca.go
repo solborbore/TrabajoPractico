@@ -2,6 +2,7 @@ package main
 
 import "errors"
 
+
 type biblioteca struct {
 	contenidos       []iContenido
 	limiteIndividual float64
@@ -59,4 +60,15 @@ func (b biblioteca) subirContenido(contenido iContenido) error {
 	}
 
 	return nil
+}
+
+func (b biblioteca) eliminarContenido(contenido iContenido) error {
+	if  b.existeEnBiblioteca(contenido) {
+	 b.contenidos.remove(contenido)
+	} else {
+		return errors.New("El elemento no se encunetra en la biblioteca")
+	}
+
+	return nil
+
 }
