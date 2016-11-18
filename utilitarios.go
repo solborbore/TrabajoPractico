@@ -25,3 +25,12 @@ func any(vs []iContenido, f func(iContenido) bool) bool {
 	}
 	return false
 }
+
+func all(vs []iContenido, f func(iContenido) bool) bool {
+	for _, v := range vs {
+		if !f(v) {
+			return false
+		}
+	}
+	return true
+}
