@@ -4,7 +4,6 @@ import (
 	"reflect"
 	s "strings"
 	"testing"
-	t "time"
 )
 
 func enTamanioDeseado(contenido iContenido, tamanioDeseado int) bool {
@@ -194,7 +193,7 @@ func Test_buscarNombres(t *testing.T) {
 	}
 }
 
-type testDeFecha struct {
+/*type testDeFecha struct {
 	name             string
 	args             iContenido
 	fAplicado        func(iContenido)
@@ -221,4 +220,4 @@ func Test_fechaModificacion(t *testing.T) {
 			}
 		})
 	}
-}
+}*/
