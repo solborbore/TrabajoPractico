@@ -1,8 +1,11 @@
 package main
 
+import t "time"
+
 type contenidoTexto struct {
-	nombre string
-	lineas []string
+	nombre            string
+	lineas            []string
+	fechaModificacion t.Time
 }
 
 func (c contenidoTexto) nombrePermitido() bool {
@@ -19,4 +22,13 @@ func (c contenidoTexto) tamanio() int {
 
 func (c contenidoTexto) esLiviano() bool {
 	return c.tamanio()/1024 < 150
+}
+
+func (c *contenidoTexto) actualizarFechaModificacion() {
+	c.fechaModificacion = t.Now()
+}
+
+func (c *contenidoTexto) renombrar(nuevoNombre string) {
+	c.nombre = nuevoNombre
+	c.actualizarFechaModificacion()
 }

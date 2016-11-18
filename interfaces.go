@@ -5,6 +5,8 @@ type iContenido interface {
 	getNombre() string
 	nombrePermitido() bool
 	esLiviano() bool
+	actualizarFechaModificacion()
+	renombrar(nuevoNombre string)
 }
 
 type iBiblioteca interface {

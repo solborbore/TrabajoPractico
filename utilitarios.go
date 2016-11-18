@@ -19,26 +19,9 @@ type a interface{}
 
 func any(vs []iContenido, f func(iContenido) bool) bool {
 	for _, v := range vs {
-		if f(v) {
+		if v != nil && f(v) {
 			return true
 		}
 	}
 	return false
 }
-
-
-func all (vs []iContenido, f func(iContenido) bool) bool {
-    for _, v := range vs {
-        if !f(v) {
-            return false
-        }
-    }
-    return true
-}
-
-/* func remove(lista *[]iContenido, e iContenido) {
-
-	 }
-
-
-}  */ // AYUDA 

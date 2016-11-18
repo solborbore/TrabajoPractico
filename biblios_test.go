@@ -1,7 +1,11 @@
 package main
 
-import "testing"
-
+import (
+	"reflect"
+	s "strings"
+	"testing"
+	t "time"
+)
 
 func enTamanioDeseado(contenido iContenido, tamanioDeseado int) bool {
 	return contenido.tamanio() == tamanioDeseado
@@ -78,7 +82,7 @@ func Test_elTamanioDeUnArchivoBinarioConBsip2EsElTamanioDeSuSecuenciaMenosUn10Si
 			t.Errorf("Test sin exito")
 		}
 	})
-}
+}*/
 
 func cadenaMuyLarga() string {
 	return s.Repeat("a", 1024*151)
@@ -117,31 +121,104 @@ func Test_bloqueosEnSubida(t *testing.T) {
 
 	contenidoTextDeNombreLargo := contenidoTexto{nombre: cadenaMuyLarga(), lineas: []string{"", ""}}
 	contenidoTextoNormal := contenidoTexto{nombre: "", lineas: []string{"", ""}}
+	contenidoTextoQueYaExiste := contenidoTexto{nombre: "ya existo", lineas: []string{"", ""}}
+	contenidoDemasiadoGrande := contenidoTexto{nombre: "soy grande", lineas: []string{cadenaMuyLarga(), cadenaMuyLarga()}}
+
+	biblio.contenidos = append(biblio.contenidos, contenidoTextoQueYaExiste)
 
 	tests := []testDeSubida{
 		testDeSubida{name: "Un contenido tiene nombre muy largo y por ende no puede subirse", args: contenidoTextDeNombreLargo, resultadoQuerido: false},
-		testDeSubida{name: "Un contenido normal", args: contenidoTextoNormal, resultadoQuerido: true},
+		testDeSubida{name: "Un contenido cumple todo y puede subirse", args: contenidoTextoNormal, resultadoQuerido: true},
+		testDeSubida{name: "Un contenido ya existe en la biblioteca y por ende no puede subirse", args: contenidoTextoQueYaExiste, resultadoQuerido: false},
+		testDeSubida{name: "Un contenido es demasiado grande y por ende no puede subirse", args: contenidoDemasiadoGrande, resultadoQuerido: false},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if biblio.rebalza() != tt.resultadoQuerido {
+			if biblio.puedeSubirContenido(tt.args) != tt.resultadoQuerido {
 				t.Errorf("Error en el test " + tt.name)
 			}
 		})
 	}
-} */ // los comente porque no funcionaban
+}
 
+func Test_fallasAlSubir(t *testing.T) {
+	biblio := biblioteca{contenidos: make([]iContenido, 8), limiteIndividual: 40000}
 
-func Test_UnaCarpetaEsLivianaSiTodosSusElementosLoSon(t *testing.T) {
+	contenidoTextDeNombreLargo := contenidoTexto{nombre: cadenaMuyLarga(), lineas: []string{"", ""}}
+	contenidoTextoNormal := contenidoTexto{nombre: "normal", lineas: []string{"", ""}}
+	contenidoDemasiadoGrande := contenidoTexto{nombre: "soy grande", lineas: []string{cadenaMuyLarga(), cadenaMuyLarga()}}
 
-	archivo := contenidoTexto{nombre: "hola", lineas: []string{"hola", "chau"}}
-	carpeta := carpeta{nombre: "holas", contenidos: []iContenido{archivo}}
+	tests := []testDeSubida{
+		testDeSubida{name: "Un contenido tiene nombre muy largo y da error al querer subirse", args: contenidoTextDeNombreLargo, resultadoQuerido: true},
+		testDeSubida{name: "Un contenido cumple todo y se sube sin error", args: contenidoTextoNormal, resultadoQuerido: false},
+		testDeSubida{name: "Un contenido ya existe en la biblioteca y da error al querer subirse", args: contenidoTextoNormal, resultadoQuerido: true},
+		testDeSubida{name: "Un contenido es demasiado grande y da error al querer subirse", args: contenidoDemasiadoGrande, resultadoQuerido: true},
+	}
 
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if e := biblio.subirContenido(tt.args); (e != nil) != tt.resultadoQuerido {
+				t.Errorf("Error en el test " + tt.name)
+			}
+		})
+	}
+}
 
-	t.Run("Test_UnaCarpetaEsLivianaSiTodosSusElementosLoSon", func(t *testing.T) {
-		if !carpeta.esLiviano() {
-			t.Errorf("Test sin exito")
-		}
-	})
+type testDeBusqueda struct {
+	name             string
+	args             string
+	resultadoQuerido []iContenido
+}
+
+func Test_buscarNombres(t *testing.T) {
+	biblio := biblioteca{contenidos: make([]iContenido, 8), limiteIndividual: 40000}
+
+	contenidoTextoNormal := contenidoTexto{nombre: "normal", lineas: []string{"", ""}}
+	otroContenidoTextoNormal := contenidoTexto{nombre: "normal 2", lineas: []string{"", ""}}
+
+	biblio.subirContenido(contenidoTextoNormal)
+	biblio.subirContenido(otroContenidoTextoNormal)
+
+	tests := []testDeBusqueda{
+		testDeBusqueda{name: "Busco un nombre que no esta en la biblioteca, y la lista de resultado esta vacia", args: "asd", resultadoQuerido: []iContenido{}},
+		testDeBusqueda{name: "Busco un nombre que existe en biblioteca, y recibo una lista de resultados", args: "normal", resultadoQuerido: []iContenido{contenidoTextoNormal, otroContenidoTextoNormal}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if !reflect.DeepEqual(tt.resultadoQuerido, biblio.buscarPorNombre(tt.args)) {
+				t.Errorf("Error en el test " + tt.name)
+			}
+		})
+	}
+}
+
+type testDeFecha struct {
+	name             string
+	args             iContenido
+	fAplicado        func(iContenido)
+	resultadoQuerido t.TimeS
+}
+
+func Test_fechaModificacion(t *testing.T) {
+	biblio := biblioteca{contenidos: make([]iContenido, 8), limiteIndividual: 40000}
+
+	contenidoTextoNormal := contenidoTexto{nombre: "normal", lineas: []string{"", ""}}
+
+	biblio.subirContenido(contenidoTextoNormal)
+	biblio.subirContenido(otroContenidoTextoNormal)
+
+	tests := []testDeBusqueda{
+		testDeFecha{name: "Un contenido se sube a la biblioteca y su fecha de modificacion es la actual", args: contenidoTextoNormal, resultadoQuerido: []iContenido{}},
+		testDeFecha{name: "Busco un nombre que existe en biblioteca, y recibo una lista de resultados", args: "normal", resultadoQuerido: []iContenido{contenidoTextoNormal, otroContenidoTextoNormal}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if !reflect.DeepEqual(tt.resultadoQuerido, biblio.buscarPorNombre(tt.args)) {
+				t.Errorf("Error en el test " + tt.name)
+			}
+		})
+	}
 }

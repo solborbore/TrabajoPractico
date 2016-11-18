@@ -1,7 +1,7 @@
 package main
 
 import "errors"
-
+import s "strings"
 
 type biblioteca struct {
 	contenidos       []iContenido
@@ -9,7 +9,11 @@ type biblioteca struct {
 }
 
 func (b biblioteca) existeEnBiblioteca(contenido iContenido) bool {
-	return any(b.contenidos, func(conte iContenido) bool { return conte == contenido })
+	return any(b.contenidos, func(conte iContenido) bool { return conte.getNombre() == contenido.getNombre() })
+}
+
+func (b biblioteca) noExisteEnBiblioteca(contenido iContenido) bool {
+	return !b.existeEnBiblioteca(contenido)
 }
 
 func (b biblioteca) cumpleTamanioRequerido(contenido iContenido) bool {
@@ -20,13 +24,14 @@ func (b biblioteca) permiteNombre(contenido iContenido) bool {
 	return contenido.nombrePermitido()
 }
 
-func (b biblioteca) tamanio() (sum float64) {
-	if len(b.contenidos) != 0 {
-		for _, contenido := range b.contenidos {
+func (b biblioteca) tamanio() float64 {
+	sum := 0.0
+	for _, contenido := range b.contenidos {
+		if contenido != nil {
 			sum += float64(contenido.tamanio())
 		}
 	}
-	return
+	return sum
 }
 
 func (b biblioteca) rebalza() bool {
@@ -35,7 +40,7 @@ func (b biblioteca) rebalza() bool {
 
 func (b biblioteca) puedeSubirContenido(contenido iContenido) bool {
 	condicionesDeContenido := []func(iContenido) bool{
-		b.existeEnBiblioteca, b.cumpleTamanioRequerido, b.permiteNombre}
+		b.noExisteEnBiblioteca, b.cumpleTamanioRequerido, b.permiteNombre}
 	for _, condicion := range condicionesDeContenido {
 		if !condicion(contenido) {
 			return false
@@ -48,11 +53,12 @@ func (b biblioteca) puedeSubirContenido(contenido iContenido) bool {
 	return true
 }
 
-func (b biblioteca) concretarSubida(contenido iContenido) {
+func (b *biblioteca) concretarSubida(contenido iContenido) {
+	contenido.actualizarFechaModificacion()
 	b.contenidos = append(b.contenidos, contenido)
 }
 
-func (b biblioteca) subirContenido(contenido iContenido) error {
+func (b *biblioteca) subirContenido(contenido iContenido) error {
 	if b.puedeSubirContenido(contenido) {
 		b.concretarSubida(contenido)
 	} else {
@@ -62,13 +68,17 @@ func (b biblioteca) subirContenido(contenido iContenido) error {
 	return nil
 }
 
-func (b biblioteca) eliminarContenido(contenido iContenido) error {
-	if  b.existeEnBiblioteca(contenido) {
-	 b.contenidos.remove(contenido)
-	} else {
-		return errors.New("El elemento no se encunetra en la biblioteca")
+func (b biblioteca) buscarPorNombre(nombre string) (contenidos []iContenido) {
+	contenidos = filter(b.contenidos, func(conte iContenido) bool { return s.Contains(conte.getNombre(), nombre) })
+	return
+}
+
+func filter(vs []iContenido, f func(iContenido) bool) []iContenido {
+	vsf := make([]iContenido, 0)
+	for _, v := range vs {
+		if v != nil && f(v) {
+			vsf = append(vsf, v)
+		}
 	}
-
-	return nil
-
+	return vsf
 }
