@@ -24,11 +24,15 @@ func (c contenidoTexto) esLiviano() bool {
 	return c.tamanio()/1024 < 150
 }
 
-func (c *contenidoTexto) actualizarFechaModificacion() {
+func (c contenidoTexto) actualizarFechaModificacion() {
 	c.fechaModificacion = t.Now()
 }
 
-func (c *contenidoTexto) renombrar(nuevoNombre string) {
+func (c contenidoTexto) renombrar(nuevoNombre string) {
 	c.nombre = nuevoNombre
 	c.actualizarFechaModificacion()
+}
+
+func (c contenidoTexto) estaRoto(b biblioteca) bool {
+	return !b.existeEnBiblioteca(c)
 }

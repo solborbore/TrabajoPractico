@@ -46,6 +46,11 @@ func (b biblioteca) puedeSubirContenido(contenido iContenido) bool {
 			return false
 		}
 	}
+
+	if !contenido.estaRoto(b) {
+		return false
+	}
+
 	if b.rebalza() {
 		return false
 	}
@@ -73,12 +78,22 @@ func (b biblioteca) buscarPorNombre(nombre string) (contenidos []iContenido) {
 	return
 }
 
-func filter(vs []iContenido, f func(iContenido) bool) []iContenido {
-	vsf := make([]iContenido, 0)
-	for _, v := range vs {
-		if v != nil && f(v) {
-			vsf = append(vsf, v)
+func (s biblioteca) remove(d iContenido) {
+	for i := range s.contenidos {
+		if s.contenidos[i].getNombre() == d.getNombre() {
+
+			s.contenidos = append(s.contenidos[:i], s.contenidos[i+1:]...)
 		}
 	}
-	return vsf
 }
+
+func (b *biblioteca) eliminarContenido(contenido iContenido) {
+
+	b.contenidos = filter(b.contenidos, func(conte iContenido) bool { return conte.getNombre() != contenido.getNombre() })
+
+} /* si no pasamos el puntero, no modifica a la biblioteca*/
+
+func (b *biblioteca) eliminarContenidosRotos(bib biblioteca) {
+	b.contenidos = filter(b.contenidos, func(conte iContenido) bool { return !conte.estaRoto(bib) })
+} /* pasamos el puntero a la biblioteca para asi poder modificar su variable contenidos, pero a su vez tuvimos que pasarle la
+biblioteca como parametro par asi poder pasarsela al metodo/funcion estaRoto. Si solo pasamos el puntero, no compila*/

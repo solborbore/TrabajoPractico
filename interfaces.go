@@ -7,10 +7,13 @@ type iContenido interface {
 	esLiviano() bool
 	actualizarFechaModificacion()
 	renombrar(nuevoNombre string)
+	estaRoto(b biblioteca) bool
 }
 
 type iBiblioteca interface {
 	puedeSubirContenido(iContenido) bool
+	eliminarContenido(iContenido)
+	eliminarContenidosRotos()
 }
 
 type iTipoCompresion interface {

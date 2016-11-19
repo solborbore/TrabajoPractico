@@ -221,3 +221,33 @@ func Test_fechaModificacion(t *testing.T) {
 		})
 	}
 }*/
+
+func Test_UnaCarpetaEsLivianaSiTodosSusElementosLoSon(t *testing.T) {
+
+	archivo := contenidoTexto{nombre: "hola", lineas: []string{"hola", "chau"}}
+	carpeta := carpeta{nombre: "holas", contenidos: []iContenido{archivo}}
+
+	t.Run("Test_UnaCarpetaEsLivianaSiTodosSusElementosLoSon", func(t *testing.T) {
+		if !carpeta.esLiviano() {
+			t.Errorf("Test sin exito")
+		}
+	})
+}
+
+func Test_RemoverUnElementoDeLaBiblioteca(t *testing.T) {
+
+	archivo1 := contenidoTexto{nombre: "sol", lineas: []string{"holazzz", "chauuuu"}}
+	archivo2 := contenidoTexto{nombre: "juan", lineas: []string{"freza", "talvezzzz"}}
+
+	biblio := biblioteca{contenidos: []iContenido{archivo1, archivo2}, limiteIndividual: 40000}
+
+	cantidadContenidos := len(biblio.contenidos)
+
+	biblio.eliminarContenido(archivo1)
+
+	t.Run("Test_RemoverUnElementoDeLaBiblioteca", func(t *testing.T) {
+		if !(len(biblio.contenidos) == cantidadContenidos-1) {
+			t.Errorf("Test sin exito")
+		}
+	})
+} //no funciona este test porq no pudimos hacer el remove porq go es una kk

@@ -34,3 +34,13 @@ func all(vs []iContenido, f func(iContenido) bool) bool {
 	}
 	return true
 }
+
+func filter(vs []iContenido, f func(iContenido) bool) []iContenido {
+	vsf := make([]iContenido, 0)
+	for _, v := range vs {
+		if v != nil && f(v) {
+			vsf = append(vsf, v)
+		}
+	}
+	return vsf
+}
