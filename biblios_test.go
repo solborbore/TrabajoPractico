@@ -4,6 +4,7 @@ import (
 	"reflect"
 	s "strings"
 	"testing"
+	"time"
 )
 
 func enTamanioDeseado(contenido iContenido, tamanioDeseado int) bool {
@@ -253,3 +254,16 @@ func Test_RemoverUnElementoDeLaBiblioteca(t *testing.T) {
 		}
 	})
 } //no funciona este test porq no pudimos hacer el remove porq go es una kk
+
+func Test_LosContenidosReferenciadosNoFueronSubidosYNoSeSube(t *testing.T) {
+	unArchivo := contenidoTexto{nombre: "tom", lineas: []string{"Buenas", "Tardes"}}
+	unLink := link{nombre: "link a tom", referencia: unArchivo , fechaModificacion: time.Now()}
+
+	biblio := biblioteca{contenidos: []iContenido{}, limiteIndividual: 40000}
+
+	biblio.subirContenido(unLink)
+
+	t.Run("LosContenidosReferenciadosNoFueronSubidosYNoSeSube", func(t *testing.T) {
+		if (len(biblio.contenidos) == 1) {
+			t.Errorf("Test sin exito")
+}

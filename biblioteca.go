@@ -87,3 +87,30 @@ func (b biblioteca) eliminarContenido(contenido iContenido) {
 func (b biblioteca) eliminarContenidosRotos() {
 	(&b).contenidos = filter(b.contenidos, func(conte iContenido) bool { return !conte.estaRoto(b) })
 }
+
+func (b biblioteca) cantContenidos() int {
+	return len(b.contenidos)
+}
+
+func (b biblioteca) ordenarPorFecha() []iContenido {
+	var aux iContenido
+	var contenidosOrdenados = b.contenidos
+	for i := 0 ; i< b.cantContenidos() ; i++ {
+		for j := 0 ; j < b.cantContenidos() - i ; j++ {
+			if contenidosOrdenados[j].fechaDeModificacion().After(contenidosOrdenados[j+1].fechaDeModificacion()){
+				aux = contenidosOrdenados[j]
+				contenidosOrdenados[j] = contenidosOrdenados[j+1]
+				contenidosOrdenados[j+1] = aux
+			}
+		}
+	}
+	return contenidosOrdenados
+}
+
+func (b biblioteca) ultimos5Contenidos() [5]iContenido {
+	var ultimos5 [5]iContenido
+	for i:=0 ; i< 5 ; i++ {
+		ultimos5[i] = b.contenidos[i] 
+	}
+	return ultimos5
+}

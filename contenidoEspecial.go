@@ -68,6 +68,10 @@ func (c carpeta) esLiviano() bool {
 	return all(c.contenidos, func(conte iContenido) bool { return conte.esLiviano() })
 }
 
-func (c carpeta) estaRoto(b biblioteca) bool {
+func (c carpeta) estaRoto(b iBiblioteca) bool {
 	return any(c.contenidos, func(conte iContenido) bool { return conte.estaRoto(b) })
+}
+
+func (c carpeta) fechaDeModificacion() time.Time {
+	return c.fechaModificacion
 }

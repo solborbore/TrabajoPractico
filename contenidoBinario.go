@@ -34,6 +34,10 @@ func (c contenidoBinario) renombrar(nuevoNombre string) {
 	c.actualizarFechaModificacion()
 }
 
-func (c contenidoBinario) estaRoto(b biblioteca) bool {
+func (c contenidoBinario) estaRoto(b iBiblioteca) bool {
 	return !b.existeEnBiblioteca(c)
+}
+
+func (c contenidoBinario) fechaDeModificacion() time.Time {
+	return c.fechaModificacion
 }

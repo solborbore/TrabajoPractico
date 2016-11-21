@@ -33,6 +33,10 @@ func (c contenidoTexto) renombrar(nuevoNombre string) {
 	c.actualizarFechaModificacion()
 }
 
-func (c contenidoTexto) estaRoto(b biblioteca) bool {
+func (c contenidoTexto) estaRoto(b iBiblioteca) bool {
 	return !b.existeEnBiblioteca(c)
+}
+
+func (c contenidoTexto) fechaDeModificacion() t.Time {
+	return c.fechaModificacion
 }
