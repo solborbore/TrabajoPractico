@@ -26,12 +26,11 @@ func (c contenidoBinario) esLiviano() bool {
 }
 
 func (c contenidoBinario) actualizarFechaModificacion() {
-	c.fechaModificacion = time.Now()
-} /* tuvimos que cambiar este metodo/funcion porque si le pasabamos el puntero y no el contenido, este no era implementado por la interfaz,
-no se podia pasar por parametro en funciones que esperaban un type iContenido */
+	(&c).fechaModificacion = time.Now()
+}
 
 func (c contenidoBinario) renombrar(nuevoNombre string) {
-	c.nombre = nuevoNombre
+	(&c).nombre = nuevoNombre
 	c.actualizarFechaModificacion()
 }
 

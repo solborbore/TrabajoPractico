@@ -58,12 +58,12 @@ func (b biblioteca) puedeSubirContenido(contenido iContenido) bool {
 	return true
 }
 
-func (b *biblioteca) concretarSubida(contenido iContenido) {
+func (b biblioteca) concretarSubida(contenido iContenido) {
 	contenido.actualizarFechaModificacion()
-	b.contenidos = append(b.contenidos, contenido)
+	(&b).contenidos = append(b.contenidos, contenido)
 }
 
-func (b *biblioteca) subirContenido(contenido iContenido) error {
+func (b biblioteca) subirContenido(contenido iContenido) error {
 	if b.puedeSubirContenido(contenido) {
 		b.concretarSubida(contenido)
 	} else {
@@ -78,22 +78,12 @@ func (b biblioteca) buscarPorNombre(nombre string) (contenidos []iContenido) {
 	return
 }
 
-func (s biblioteca) remove(d iContenido) {
-	for i := range s.contenidos {
-		if s.contenidos[i].getNombre() == d.getNombre() {
+func (b biblioteca) eliminarContenido(contenido iContenido) {
 
-			s.contenidos = append(s.contenidos[:i], s.contenidos[i+1:]...)
-		}
-	}
+	(&b).contenidos = filter(b.contenidos, func(conte iContenido) bool { return conte.getNombre() != contenido.getNombre() })
+
 }
 
-func (b *biblioteca) eliminarContenido(contenido iContenido) {
-
-	b.contenidos = filter(b.contenidos, func(conte iContenido) bool { return conte.getNombre() != contenido.getNombre() })
-
-} /* si no pasamos el puntero, no modifica a la biblioteca*/
-
-func (b *biblioteca) eliminarContenidosRotos(bib biblioteca) {
-	b.contenidos = filter(b.contenidos, func(conte iContenido) bool { return !conte.estaRoto(bib) })
-} /* pasamos el puntero a la biblioteca para asi poder modificar su variable contenidos, pero a su vez tuvimos que pasarle la
-biblioteca como parametro par asi poder pasarsela al metodo/funcion estaRoto. Si solo pasamos el puntero, no compila*/
+func (b biblioteca) eliminarContenidosRotos() {
+	(&b).contenidos = filter(b.contenidos, func(conte iContenido) bool { return !conte.estaRoto(b) })
+}
