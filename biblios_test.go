@@ -146,12 +146,14 @@ func Test_fallasAlSubir(t *testing.T) {
 
 	contenidoTextDeNombreLargo := contenidoTexto{nombre: cadenaMuyLarga(), lineas: []string{"", ""}}
 	contenidoTextoNormal := contenidoTexto{nombre: "normal", lineas: []string{"", ""}}
+	contenidoTextoNormal2 := contenidoTexto{nombre: "normal", lineas: []string{"", ""}}
 	contenidoDemasiadoGrande := contenidoTexto{nombre: "soy grande", lineas: []string{cadenaMuyLarga(), cadenaMuyLarga()}}
 
+	biblio.subirContenido(contenidoTextoNormal2)
 	tests := []testDeSubida{
 		testDeSubida{name: "Un contenido tiene nombre muy largo y da error al querer subirse", args: contenidoTextDeNombreLargo, resultadoQuerido: true},
 		testDeSubida{name: "Un contenido cumple todo y se sube sin error", args: contenidoTextoNormal, resultadoQuerido: false},
-		testDeSubida{name: "Un contenido ya existe en la biblioteca y da error al querer subirse", args: contenidoTextoNormal, resultadoQuerido: true},
+		testDeSubida{name: "Un contenido ya existe en la biblioteca y da error al querer subirse", args: contenidoTextoNormal2, resultadoQuerido: true},
 		testDeSubida{name: "Un contenido es demasiado grande y da error al querer subirse", args: contenidoDemasiadoGrande, resultadoQuerido: true},
 	}
 

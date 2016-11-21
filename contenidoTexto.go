@@ -25,11 +25,11 @@ func (c contenidoTexto) esLiviano() bool {
 }
 
 func (c contenidoTexto) actualizarFechaModificacion() {
-	c.fechaModificacion = t.Now()
+	(&c).fechaModificacion = t.Now()
 }
 
 func (c contenidoTexto) renombrar(nuevoNombre string) {
-	c.nombre = nuevoNombre
+	(&c).nombre = nuevoNombre
 	c.actualizarFechaModificacion()
 }
 

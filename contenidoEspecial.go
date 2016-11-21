@@ -24,12 +24,12 @@ func (c link) estaRoto(b biblioteca) bool {
 	return c.referencia.estaRoto(b)
 }
 
-func (c *link) actualizarFechaModificacion() {
-	c.fechaModificacion = time.Now()
+func (c link) actualizarFechaModificacion() {
+	(&c).fechaModificacion = time.Now()
 }
 
-func (c *link) renombrar(nuevoNombre string) {
-	c.nombre = nuevoNombre
+func (c link) renombrar(nuevoNombre string) {
+	(&c).nombre = nuevoNombre
 	c.actualizarFechaModificacion()
 }
 
@@ -47,12 +47,12 @@ func (c carpeta) nombrePermitido() bool {
 	return len(c.nombre) < 200
 }
 
-func (c *carpeta) actualizarFechaModificacion() {
-	c.fechaModificacion = time.Now()
+func (c carpeta) actualizarFechaModificacion() {
+	(&c).fechaModificacion = time.Now()
 }
 
-func (c *carpeta) renombrar(nuevoNombre string) {
-	c.nombre = nuevoNombre
+func (c carpeta) renombrar(nuevoNombre string) {
+	(&c).nombre = nuevoNombre
 	c.actualizarFechaModificacion()
 }
 
