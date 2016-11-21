@@ -20,7 +20,7 @@ func (c link) esLiviano() bool {
 	return true
 }
 
-func (c link) estaRoto(b biblioteca) bool {
+func (c link) estaRoto(b iBiblioteca) bool {
 	return c.referencia.estaRoto(b)
 }
 

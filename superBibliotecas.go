@@ -5,6 +5,7 @@ import s "strings"
 
 type superBiblioteca struct {
 	contenidos       []iContenido
+	limiteIndividual float64
 }
 
 func (sb superBiblioteca) existeEnBiblioteca(contenido iContenido) bool {
@@ -17,6 +18,10 @@ func (sb superBiblioteca) noExisteEnBiblioteca(contenido iContenido) bool {
 
 func (sb superBiblioteca) permiteNombre(contenido iContenido) bool {
 	return contenido.nombrePermitido()
+}
+
+func (sb superBiblioteca) rebalza() bool {
+	return false
 }
 
 func (sb superBiblioteca) tamanio() float64 {
@@ -82,9 +87,9 @@ func (sb superBiblioteca) cantContenidos() int {
 func (sb superBiblioteca) ordenarPorFecha() []iContenido {
 	var aux iContenido
 	var contenidosOrdenados = sb.contenidos
-	for i := 0 ; i< sb.cantContenidos() ; i++ {
-		for j := 0 ; j < sb.cantContenidos() - i ; j++ {
-			if contenidosOrdenados[j].fechaDeModificacion().After(contenidosOrdenados[j+1].fechaDeModificacion()){
+	for i := 0; i < sb.cantContenidos(); i++ {
+		for j := 0; j < sb.cantContenidos()-i; j++ {
+			if contenidosOrdenados[j].fechaDeModificacion().After(contenidosOrdenados[j+1].fechaDeModificacion()) {
 				aux = contenidosOrdenados[j]
 				contenidosOrdenados[j] = contenidosOrdenados[j+1]
 				contenidosOrdenados[j+1] = aux
@@ -94,10 +99,14 @@ func (sb superBiblioteca) ordenarPorFecha() []iContenido {
 	return contenidosOrdenados
 }
 
+func (sb superBiblioteca) cumpleTamanioRequerido(contenido iContenido) bool {
+	return float64(contenido.tamanio()) <= sb.limiteIndividual
+}
+
 func (sb superBiblioteca) ultimos5Contenidos() [5]iContenido {
 	var ultimos5 [5]iContenido
-	for i:=0 ; i< 5 ; i++ {
-		ultimos5[i] = sb.contenidos[i] 
+	for i := 0; i < 5; i++ {
+		ultimos5[i] = sb.contenidos[i]
 	}
 	return ultimos5
 }

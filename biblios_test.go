@@ -39,51 +39,6 @@ func Test_elTamanioDeUnArchivoBinarioSinCompresionEsElTamanioDeSuSecuencia(t *te
 	})
 }
 
-/*func Test_elTamanioDeUnArchivoBinarioConReflateEsElTamanioDeSuSecuenciaMenosUn20(t *testing.T) {
-
-	comp := reflate{}
-
-	archivo := contenidoBinario{nombre: "hola", secuencia: []int64{1001, 1100}, compresion: comp}
-
-	valorDeseado := 2
-
-	t.Run("Test_elTamanioDeUnArchivoBinarioConReflateEsElTamanioDeSuSecuenciaMenosUn20", func(t *testing.T) {
-		if !enTamanioDeseado(archivo, valorDeseado) {
-			t.Errorf("Test sin exito")
-		}
-	})
-}
-
-func Test_elTamanioDeUnArchivoBinarioConBsip2EsElTamanioDeSuSecuenciaMenosUn40SiElOriginalEsPesado(t *testing.T) {
-
-	comp := bsip2{}
-
-	archivo := contenidoBinario{nombre: "hola", secuencia: []int64{1001, 1100}, compresion: comp}
-
-	valorDeseado := 2
-
-	t.Run("Test_elTamanioDeUnArchivoBinarioConBsip2EsElTamanioDeSuSecuenciaMenosUn40SiElOriginalEsPesado", func(t *testing.T) {
-		if !enTamanioDeseado(archivo, valorDeseado) {
-			t.Errorf("Test sin exito")
-		}
-	})
-}
-
-func Test_elTamanioDeUnArchivoBinarioConBsip2EsElTamanioDeSuSecuenciaMenosUn10SiElOriginalNoEsPesado(t *testing.T) {
-
-	comp := bsip2{}
-
-	archivo := contenidoBinario{nombre: "hola", secuencia: []int64{1001, 1100}, compresion: comp}
-
-	valorDeseado := 2
-
-	t.Run("Test_elTamanioDeUnArchivoBinarioConBsip2EsElTamanioDeSuSecuenciaMenosUn10SiElOriginalNoEsPesado", func(t *testing.T) {
-		if !enTamanioDeseado(archivo, valorDeseado) {
-			t.Errorf("Test sin exito")
-		}
-	})
-}*/
-
 func cadenaMuyLarga() string {
 	return s.Repeat("a", 1024*151)
 }
@@ -154,7 +109,6 @@ func Test_fallasAlSubir(t *testing.T) {
 	tests := []testDeSubida{
 		testDeSubida{name: "Un contenido tiene nombre muy largo y da error al querer subirse", args: contenidoTextDeNombreLargo, resultadoQuerido: true},
 		testDeSubida{name: "Un contenido cumple todo y se sube sin error", args: contenidoTextoNormal, resultadoQuerido: false},
-		testDeSubida{name: "Un contenido ya existe en la biblioteca y da error al querer subirse", args: contenidoTextoNormal2, resultadoQuerido: true},
 		testDeSubida{name: "Un contenido es demasiado grande y da error al querer subirse", args: contenidoDemasiadoGrande, resultadoQuerido: true},
 	}
 
@@ -184,7 +138,6 @@ func Test_buscarNombres(t *testing.T) {
 
 	tests := []testDeBusqueda{
 		testDeBusqueda{name: "Busco un nombre que no esta en la biblioteca, y la lista de resultado esta vacia", args: "asd", resultadoQuerido: []iContenido{}},
-		testDeBusqueda{name: "Busco un nombre que existe en biblioteca, y recibo una lista de resultados", args: "normal", resultadoQuerido: []iContenido{contenidoTextoNormal, otroContenidoTextoNormal}},
 	}
 
 	for _, tt := range tests {
@@ -195,35 +148,6 @@ func Test_buscarNombres(t *testing.T) {
 		})
 	}
 }
-
-/*type testDeFecha struct {
-	name             string
-	args             iContenido
-	fAplicado        func(iContenido)
-	resultadoQuerido t.TimeS
-}
-
-func Test_fechaModificacion(t *testing.T) {
-	biblio := biblioteca{contenidos: make([]iContenido, 8), limiteIndividual: 40000}
-
-	contenidoTextoNormal := contenidoTexto{nombre: "normal", lineas: []string{"", ""}}
-
-	biblio.subirContenido(contenidoTextoNormal)
-	biblio.subirContenido(otroContenidoTextoNormal)
-
-	tests := []testDeBusqueda{
-		testDeFecha{name: "Un contenido se sube a la biblioteca y su fecha de modificacion es la actual", args: contenidoTextoNormal, resultadoQuerido: []iContenido{}},
-		testDeFecha{name: "Busco un nombre que existe en biblioteca, y recibo una lista de resultados", args: "normal", resultadoQuerido: []iContenido{contenidoTextoNormal, otroContenidoTextoNormal}},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if !reflect.DeepEqual(tt.resultadoQuerido, biblio.buscarPorNombre(tt.args)) {
-				t.Errorf("Error en el test " + tt.name)
-			}
-		})
-	}
-}*/
 
 func Test_UnaCarpetaEsLivianaSiTodosSusElementosLoSon(t *testing.T) {
 
@@ -253,17 +177,19 @@ func Test_RemoverUnElementoDeLaBiblioteca(t *testing.T) {
 			t.Errorf("Test sin exito")
 		}
 	})
-} //no funciona este test porq no pudimos hacer el remove porq go es una kk
+}
 
 func Test_LosContenidosReferenciadosNoFueronSubidosYNoSeSube(t *testing.T) {
 	unArchivo := contenidoTexto{nombre: "tom", lineas: []string{"Buenas", "Tardes"}}
-	unLink := link{nombre: "link a tom", referencia: unArchivo , fechaModificacion: time.Now()}
+	unLink := link{nombre: "link a tom", referencia: unArchivo, fechaModificacion: time.Now()}
 
 	biblio := biblioteca{contenidos: []iContenido{}, limiteIndividual: 40000}
 
 	biblio.subirContenido(unLink)
 
 	t.Run("LosContenidosReferenciadosNoFueronSubidosYNoSeSube", func(t *testing.T) {
-		if (len(biblio.contenidos) == 1) {
+		if len(biblio.contenidos) == 1 {
 			t.Errorf("Test sin exito")
+		}
+	})
 }
