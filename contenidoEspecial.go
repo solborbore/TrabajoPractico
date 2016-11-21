@@ -33,6 +33,10 @@ func (c link) renombrar(nuevoNombre string) {
 	c.actualizarFechaModificacion()
 }
 
+func (c link) fechaDeModificacion() time.Time {
+	return c.fechaModificacion
+}
+
 func (c link) nombrePermitido() bool {
 	return len(c.nombre) < 200
 }
